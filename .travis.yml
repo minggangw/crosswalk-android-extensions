@@ -1,0 +1,66 @@
+
+# Copyright (c) 2016 Intel Corporation. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+sudo: false
+
+os:
+- linux
+
+language: android
+
+android:
+  components:
+  - build-tools-22.0.1
+  - android-22
+
+env:
+  matrix:
+  - XWALK_CHANNEL=canary XWALK_VERSION=18.46.466.0
+
+before_install:
+- cd ..
+
+install:
+- git config --global user.email "minggangw@gmail.com"
+- git config --global user.name "Minggang Wang"
+# Install depot_tools
+- git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git `pwd`/src/third_party/depot_tools
+- export PATH="$PATH":`pwd`/src/third_party/depot_tools
+# Install GYP
+- git clone https://chromium.googlesource.com/external/gyp `pwd`/src/third_party/gyp
+- export PATH="$PATH":`pwd`/src/third_party/gyp
+# Download Crosswalk
+- curl -LO https://download.01.org/crosswalk/releases/crosswalk/android/${XWALK_CHANNEL}/${XWALK_VERSION}/crosswalk-${XWALK_VERSION}.zip
+  && unzip crosswalk-${XWALK_VERSION}.zip && rm crosswalk-${XWALK_VERSION}.zip
+- chmod a+x `pwd`/crosswalk-${XWALK_VERSION}/make_apk.py
+- export PATH="$PATH":`pwd`/crosswalk-${XWALK_VERSION}
+- export PATH="$PATH":/usr/local/android-sdk/build-tools/22.0.1
+- export GYP_GENERATORS='ninja'
+
+before_deploy:
+- zip -j iap.zip out/Default/gen/iap/iap.jar out/Default/gen/iap/iap.js out/Default/gen/iap/iap.json
+
+deploy:
+  provider: releases
+  user: minggangw@gmail.com
+  api_key:
+    secure: lqm65MfR/yKlhxUBlaRpv7/+zmCxsaVsQi/HiPGlIswdze23pWclT3JT1GJLJ1cd9p/JfPYS+5ZxKxJV/dbcH3l6j23Aml45V9eQfF97J10IzbtqHJPhYWQbqJ8rRxUg5JXauNmsXyqLnonnBpMfdgbditr+cZKwS649SvFYqMLGDq993gzJx3hXoA7rnpHRZ6OPlZkb8KhVGFrb26VMZe3SvdI/fGelAYEGhbp9f+Voo1zbY0HCDZqA/zM90oWK4Y0VcDPb9eRZF5wQFH1VQuamweXHFH0R+iRTPPJuI6SrB7gBkPlZ9IxvJaJeCO1x4LhmvE1bbh/p9p409eBkjtdK1/qfPi1D7+j76uaA1PPwzHCcXsPZOafxR9fB24S5Od9CyLg7H64L5OJ5lUYJO4tnhtfFlYPXZqh6TDgayVnnc50VtKXmoYKx48ip6uill7kP2uDeT1uS+xoaafm4OwESDHJimxBDkPltV0kHVXD6Q/nIt0BjVSno5cT3fXjblSmK0zRXNcpTYBDYdJy7ubWP3gV0XSFyuEtSEtg7/O+Aeh57AleRQIECOetEXOK9HY96CSHaOx0w5mV1F8G0z2/R0CYK5wdiE7/IMxd5dxwiJOwWjXPxz3qNLrAnzwlxbUt0rnTlx22uz2QxztioJyM2paoFEDpWhFxdBLZkCWo=
+  file:
+  - iap.zip
+  skip_cleanup: true
+  on:
+    tags: true
+
+script:
+- cd crosswalk-android-extensions
+- gyp --depth=. all.gyp
+- ninja -C out/Default pack_iap_jars
+
+notifications:
+  email:
+    recipients:
+    - halton.huo@intel.com
+    on_success: always
+    on_failure: always
