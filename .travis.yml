@@ -44,7 +44,6 @@ before_deploy:
 
 deploy:
   provider: releases
-  user: minggangw@gmail.com
   api_key:
     secure: Hqb/uvFY21dlxEfAceuu7wsfvo2+vsMRfl+34KYlrA5e6h987ev7UDWrmfte2MXOgiesCS7iaZaUQc3HGwMT96bP4GJY9lcJt5S29Ohjaopno1DgwUTXhMQ5Ls/a0+QxHgtGrPgUkYGoFtHjpVspneOGUbMmou9EmRdqL0ZbOwc4ihSvof2rMvZvI07dNf57gzUoBZDLpwuBDYyymnVZkth582UUOv4xUv1/jJikLZShIadgXS+ZpjLWsdgZyPzmtD/8bSnou6PIwserVwSJ6q3N67p/dWNKEvXA+NBmNoGYY3SuvsmtCimSY68/u6GCtcaE85P6p5HcIhrKCsRfkbjczOiduob1qnGz+2VnREzVe2z0+Df2elutm5JT8qax6pNTwjCKWwasrnSynCST1It32qGQ+v41ufYcLdP434kliN0cofsMW0VJ6rC7uWj7UvTeynKWOkf58ZLGEyIBsxb2KRS8ELay3TUN1ZNSwsqSL7zdBswH868vxHlpxpKi46WIY1fgVQk714woQerRflQHTsqJGMp/fYRyxo1MO0SvqVQH4btUr2v+PfyoIr8fzqGuP69vTG7vE7IKPfyB/9N8BGcBZqQmK1WcX6wDJMWYbWzrF2L8GACoPlTnf/bYYpRkd6SGNZeRUvQVpkvcdfAUnt3+mnMXgpAuvP8J6lY=
   file:
@@ -61,6 +60,6 @@ script:
 notifications:
   email:
     recipients:
-    - halton.huo@intel.com
+    - minggang.wang@intel.com
     on_success: always
     on_failure: always
